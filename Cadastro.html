@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrar</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .logo {
+      width: 180px;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="form-container">
+      <img src="assets/Logo.png" alt="Logo" class="logo">
+
+      <form class="form" id="register-form">
+        <h2>Cadastro</h2>
+        
+        <div class="input-group">
+          <label for="register-name">Nome</label>
+          <input type="text" id="register-name" placeholder="Digite seu nome" required>
+        </div>
+        
+        <div class="input-group">
+          <label for="register-surname">Sobrenome</label>
+          <input type="text" id="register-surname" placeholder="Digite seu sobrenome" required>
+        </div>
+
+        <div class="input-group">
+          <label for="register-age">Idade</label>
+          <input type="number" id="register-age" placeholder="Digite sua idade" required>
+        </div>
+
+        <div class="input-group">
+          <label for="register-gender">Sexo</label>
+          <select id="register-gender" required>
+            <option value="">Selecione seu sexo</option>
+            <option value="masculino">Masculino</option>
+            <option value="feminino">Feminino</option>
+            <option value="outro">Outro</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label for="register-blood-type">Tipo Sanguíneo</label>
+          <select id="register-blood-type" required>
+            <option value="">Selecione seu tipo sanguíneo</option>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+  <label for="register-phone">Telefone para Contato</label>
+  <input type="tel" id="register-phone" placeholder="Digite seu telefone" maxlength="11" required>
+</div>
+
+
+        <div class="input-group">
+          <label for="register-location">Localização</label>
+          <input type="text" id="register-location" placeholder="Digite sua localização" required>
+        </div>
+
+        <div class="input-group">
+          <label for="register-email">Email</label>
+          <input type="email" id="register-email" placeholder="Digite seu email" required>
+        </div>
+        
+        <div class="input-group">
+          <label for="register-password">Senha</label>
+          <input type="password" id="register-password" placeholder="Digite sua senha" required>
+        </div>
+
+	<div id="mensagem" class="mensagem">
+	</div>
+        
+        <button type="submit">Registrar</button>
+        <p>Já tem uma conta? <a href="login.html">Login</a></p>
+      </form>
+    </div>
+  </div>
+
+<script>
+document.getElementById('register-form').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    const formData = {
+        nome: document.getElementById('register-name').value,
+        sobrenome: document.getElementById('register-surname').value,
+        idade: document.getElementById('register-age').value,
+        sexo: document.getElementById('register-gender').value,
+        tipo_sanguineo: document.getElementById('register-blood-type').value,
+        telefone: document.getElementById('register-phone').value,
+        localizacao: document.getElementById('register-location').value,
+        email: document.getElementById('register-email').value,
+        senha: document.getElementById('register-password').value,
+    };
+
+    fetch('http://localhost:3000/cadastro', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Cria a div para a mensagem
+        const messageContainer = document.createElement('div');
+        messageContainer.className = 'message';
+        messageContainer.style.backgroundColor = '#d4edda';
+        messageContainer.style.border = '1px solid #c3e6cb';
+        messageContainer.style.padding = '15px';
+        messageContainer.style.marginTop = '20px';
+        messageContainer.style.color = '#155724';
+        messageContainer.style.borderRadius = '5px';
+
+        if (data.error) {
+            messageContainer.textContent = 'Erro: ' + data.error;
+            messageContainer.style.backgroundColor = '#f8d7da';
+            messageContainer.style.border = '1px solid #f5c6cb';
+            messageContainer.style.color = '#721c24';
+        } else {
+            messageContainer.textContent = 'Usuário cadastrado com sucesso! Seja bem-vindo ao Banco de Sangue.';
+            
+            // Limpar os campos do formulário
+            document.getElementById('register-name').value = '';
+            document.getElementById('register-surname').value = '';
+            document.getElementById('register-age').value = '';
+            document.getElementById('register-gender').value = '';
+            document.getElementById('register-blood-type').value = '';
+            document.getElementById('register-phone').value = '';
+            document.getElementById('register-location').value = '';
+            document.getElementById('register-email').value = '';
+            document.getElementById('register-password').value = '';
+
+            // Remover a mensagem após 10 segundos
+            setTimeout(() => {
+                messageContainer.remove();
+            }, 10000);
+        }
+
+        document.querySelector('.form-container').appendChild(messageContainer);
+    })
+    .catch(error => {
+        console.error('Erro ao cadastrar o usuário:', error);
+    });
+});
+
+
+</script>
+
+</body>
+</html>
