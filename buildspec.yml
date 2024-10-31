@@ -1,0 +1,33 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 16  # Ajuste conforme sua aplicação
+  
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - echo Installing dependencies...
+      - npm install
+      
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Running tests...
+      - npm test
+      - echo Building...
+      - npm run build
+      
+  post_build:
+    commands:
+      - echo Build completed on `date`
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: 'build'  # Ajuste conforme sua aplicação
+
+cache:
+  paths:
+    - 'node_modules/**/*'  # Ajuste conforme sua aplicação
